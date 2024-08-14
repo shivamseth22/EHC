@@ -3,195 +3,75 @@ import { ethers } from 'ethers';
 
 // Replace these with your contract's ABI and deployed address
 const CONTRACT_ABI = [
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "productName",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "phoneNumber",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "deliveryAddress",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "transactionId",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "timestamp",
-				"type": "uint256"
-			}
-		],
-		"name": "OrderPlaced",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "getOrders",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "productName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "phoneNumber",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "deliveryAddress",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "transactionId",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "timestamp",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct HealthcareOrder.Order[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "orders",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "productName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "phoneNumber",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "deliveryAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "transactionId",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "timestamp",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_productName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_phoneNumber",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_address",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_transactionId",
-				"type": "string"
-			}
-		],
-		"name": "placeOrder",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "testDetails",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "transactionId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "OrderPlaced",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_testDetails",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_transactionId",
+        "type": "string"
+      }
+    ],
+    "name": "placeOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 ];
 const CONTRACT_ADDRESS = '0xd9145CCE52D386f254917e481eB44e9943F39138';
 
 const PlaceOrder = () => {
   const [formData, setFormData] = useState({
-    productName: '',
-    name: '',
-    phoneNumber: '',
-    address: '',
+    testDetails: '',
+    totalAmount: '',
     transactionId: '',
   });
-
-
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -201,10 +81,8 @@ const PlaceOrder = () => {
   // Validate form fields
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.productName) newErrors.productName = 'Product Name is required.';
-    if (!formData.name) newErrors.name = 'Name is required.';
-    if (!formData.phoneNumber) newErrors.phoneNumber = 'Phone Number is required.';
-    if (!formData.address) newErrors.address = 'Address is required.';
+    if (!formData.testDetails) newErrors.testDetails = 'Test Details are required.';
+    if (!formData.totalAmount) newErrors.totalAmount = 'Total Amount is required.';
     if (!formData.transactionId) newErrors.transactionId = 'Transaction ID is required.';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -246,10 +124,8 @@ const PlaceOrder = () => {
 
       // Call the smart contract method
       const txResponse = await contract.placeOrder(
-        formData.productName,
-        formData.name,
-        formData.phoneNumber,
-        formData.address,
+        formData.testDetails,
+        ethers.utils.parseUnits(formData.totalAmount, 'ether'),
         formData.transactionId
       );
 
@@ -261,10 +137,8 @@ const PlaceOrder = () => {
 
       setSuccessMessage('Order successfully placed and transaction confirmed!');
       setFormData({
-        productName: '',
-        name: '',
-        phoneNumber: '',
-        address: '',
+        testDetails: '',
+        totalAmount: '',
         transactionId: '',
       });
     } catch (error) {
@@ -280,56 +154,29 @@ const PlaceOrder = () => {
         <h1 className="text-lg font-bold text-center mb-4">Order Details</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="productName" className="block text-sm font-medium text-gray-700">Product Name</label>
-            <input
-              type="text"
-              name="productName"
-              id="productName"
-              placeholder="Enter Product Name"
-              value={formData.productName}
+            <label htmlFor="testDetails" className="block text-sm font-medium text-gray-700">Test Details</label>
+            <textarea
+              name="testDetails"
+              id="testDetails"
+              placeholder="Enter lab test details"
+              value={formData.testDetails}
               onChange={handleChange}
-              className={`w-full p-2 border ${errors.productName ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              className={`w-full p-2 border ${errors.testDetails ? 'border-red-500' : 'border-gray-300'} rounded-md`}
             />
-            {errors.productName && <p className="text-red-500 text-sm">{errors.productName}</p>}
+            {errors.testDetails && <p className="text-red-500 text-sm">{errors.testDetails}</p>}
           </div>
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+            <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700">Total Amount (in ETH)</label>
             <input
               type="text"
-              name="name"
-              id="name"
-              placeholder="Enter your name"
-              value={formData.name}
+              name="totalAmount"
+              id="totalAmount"
+              placeholder="Enter total amount"
+              value={formData.totalAmount}
               onChange={handleChange}
-              className={`w-full p-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              className={`w-full p-2 border ${errors.totalAmount ? 'border-red-500' : 'border-gray-300'} rounded-md`}
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-          </div>
-          <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number</label>
-            <input
-              type="text"
-              name="phoneNumber"
-              id="phoneNumber"
-              placeholder="Enter your phone number"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              className={`w-full p-2 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            />
-            {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
-          </div>
-          <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-            <input
-              type="text"
-              name="address"
-              id="address"
-              placeholder="Specify your correct address"
-              value={formData.address}
-              onChange={handleChange}
-              className={`w-full p-2 border ${errors.address ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            />
-            {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
+            {errors.totalAmount && <p className="text-red-500 text-sm">{errors.totalAmount}</p>}
           </div>
           <div>
             <label htmlFor="transactionId" className="block text-sm font-medium text-gray-700">Transaction ID</label>
@@ -348,10 +195,8 @@ const PlaceOrder = () => {
             <button
               type="button"
               onClick={() => setFormData({
-                productName: '',
-                name: '',
-                phoneNumber: '',
-                address: '',
+                testDetails: '',
+                totalAmount: '',
                 transactionId: '',
               })}
               className="bg-orange-400 text-white py-2 px-4 rounded-md"

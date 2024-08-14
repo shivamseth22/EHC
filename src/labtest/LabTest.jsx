@@ -4,30 +4,45 @@ import { useNavigate } from 'react-router-dom';
 const LabTest = () => {
   const navigate = useNavigate();
 
-  const [selectedTests, setSelectedTests] = useState([]);
+  const [selectedTests, setSelectedTests] = useState(() => {
+    // Load initial state from local storage
+    const savedTests = localStorage.getItem('selectedTests');
+    return savedTests ? JSON.parse(savedTests) : [];
+  });
 
   const labTests = [
-    { id: 1, name: 'Complete Blood Count (CBC)', cost: '₹500' },
-    { id: 2, name: 'Liver Function Test (LFT)', cost: '₹700' },
-    { id: 3, name: 'Kidney Function Test (KFT)', cost: '₹650' },
-    { id: 4, name: 'Lipid Profile', cost: '₹600' },
-    { id: 5, name: 'Thyroid Profile', cost: '₹550' },
-    // Add more lab tests here
-    { id: 6, name: 'Blood Glucose Fasting', cost: '₹400' },
-    { id: 7, name: 'Urine Routine Examination', cost: '₹300' },
-    { id: 8, name: 'Vitamin D Test', cost: '₹1200' },
-    { id: 9, name: 'Electrolyte Panel', cost: '₹450' },
-    { id: 10, name: 'Prostate-Specific Antigen (PSA)', cost: '₹900' },
-    // More tests...
-    { id: 100, name: 'D-Dimer Test', cost: '₹1100' },
+    { id: 1, name: 'Complete Blood Count (CBC)', cost: 0.000001 },
+    { id: 2, name: 'Liver Function Test (LFT)', cost: 0.000001 },
+    { id: 3, name: 'Kidney Function Test (KFT)', cost: 0.000001 },
+    { id: 4, name: 'Lipid Profile', cost: 0.000001 },
+    { id: 5, name: 'Thyroid Profile', cost: 0.000001 },
+    { id: 6, name: 'Blood Glucose Fasting', cost: 0.000001 },
+    { id: 7, name: 'Urine Routine Examination', cost: 0.000001 },
+    { id: 8, name: 'Vitamin D Test', cost: 0.000001 },
+    { id: 9, name: 'Electrolyte Panel', cost: 0.000001 },
+    { id: 10, name: 'Prostate-Specific Antigen (PSA)', cost: 0.000001 },
+    { id: 11, name: 'Blood Urea Nitrogen (BUN)', cost: 0.000001 },
+    { id: 12, name: 'Hemoglobin A1c (HbA1c)', cost: 0.000001 },
+    { id: 13, name: 'C-Reactive Protein (CRP)', cost: 0.000001 },
+    { id: 14, name: 'Calcium Test', cost: 0.000001 },
+    { id: 15, name: 'Complete Metabolic Panel (CMP)', cost: 0.000001 },
+    { id: 16, name: 'Ferritin Test', cost: 0.000001 },
+    { id: 17, name: 'Magnesium Test', cost: 0.000001 },
+    { id: 18, name: 'Blood Gas Test', cost: 0.000001 },
+    { id: 19, name: 'Creatinine Test', cost: 0.000001 },
+    { id: 20, name: 'D-Dimer Test', cost: 0.000001 },
   ];
 
   const addTest = (test) => {
-    setSelectedTests([...selectedTests, test]);
+    const updatedTests = [...selectedTests, test];
+    setSelectedTests(updatedTests);
+    localStorage.setItem('selectedTests', JSON.stringify(updatedTests));
   };
 
   const removeTest = (id) => {
-    setSelectedTests(selectedTests.filter(test => test.id !== id));
+    const updatedTests = selectedTests.filter(test => test.id !== id);
+    setSelectedTests(updatedTests);
+    localStorage.setItem('selectedTests', JSON.stringify(updatedTests));
   };
 
   const isTestSelected = (id) => {
@@ -35,7 +50,7 @@ const LabTest = () => {
   };
 
   const handleCheckout = () => {
-    navigate('/')
+    navigate('/placeorder');
   };
 
   return (

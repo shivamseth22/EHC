@@ -64,46 +64,104 @@ const Medicine = () => {
 const recipientAddress = '0x14d61A4Fa152d16678eb6458853418667043Df80';
 
 const handleCheckout = async () => {
-  if (!window.ethereum) {
-    alert('MetaMask is not installed. Please install MetaMask to proceed.');
-    return;
-  }
+    if (selectedMedicines.length === 0) {
+      alert('Please select at least one medicine before proceeding to checkout.');
+      return;
+    }
 
-  setIsProcessing(true);
+    if (!window.ethereum) {
+      alert('MetaMask is not installed. Please install MetaMask to proceed.');
+      return;
+    }
 
-  try {
-    // Connect to MetaMask
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send('eth_requestAccounts', []);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+    setIsProcessing(true);
 
-    // Calculate total cost in wei
-    const totalCost = selectedMedicines.reduce((acc, medicine) => acc.add(medicine.cost), ethers.BigNumber.from(0));
+    try {
+      // Connect to MetaMask
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send('eth_requestAccounts', []);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-    // Generate a unique transaction ID
-    const transactionId = ethers.utils.hexlify(ethers.utils.randomBytes(32));
+      // Calculate total cost in wei
+      const totalCost = selectedMedicines.reduce((acc, medicine) => acc.add(medicine.cost), ethers.BigNumber.from(0));
 
-    // Call the contract method
-    const txResponse = await contract.completeTransaction(
-      recipientAddress, // Use a valid Ethereum address here
-      totalCost,
-      transactionId
-    );
-    await txResponse.wait();
+      // Generate a unique transaction ID
+      const transactionId = ethers.utils.hexlify(ethers.utils.randomBytes(32));
 
-    alert('Transaction successful!');
+      // Call the contract method
+      const txResponse = await contract.completeTransaction(
+        '0xYourRecipientAddressHere', // Replace with your recipient address
+        totalCost,
+        transactionId
+      );
+      await txResponse.wait();
 
-    // Clear selected medicines and navigate
-    setSelectedMedicines([]);
-    navigate('/');
-  } catch (error) {
-    console.error('Transaction failed:', error);
-    alert('Transaction failed.');
-  } finally {
-    setIsProcessing(false);
-  }
-};
+      alert('Transaction successful!');
+
+      // Clear selected medicines and navigate
+      setSelectedMedicines([]);
+      navigate('/');
+    } catch (error) {
+      console.error('Transaction failed:', error);
+      alert('Transaction failed.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <div className="flex justify-between items-center mb-4">
+          <button
+            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+            onClick={() => navigate('/')}
+          >
+            Back
+          </button>
+          <button
+            className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ${selectedMedicines.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={handleCheckout}
+            disabled={isProcessing || selectedMedicines.length === 0}
+          >
+            {isProcessing ? 'Processing...' : `Checkout (${selectedMedicines.length} medicines)`}
+          </button>
+        </div>
+
+        <h1 className="text-2xl font-bold mb-6">Medicines</h1>
+
+        <ul className="space-y-4">
+          {medicines.map((medicine) => (
+            <li key={medicine.id} className="bg-gray-50 p-4 rounded-lg shadow">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">{medicine.name}</span>
+                <span className="text-blue-500">₹{ethers.utils.formatUnits(medicine.cost, 'ether')}</span>
+              </div>
+              <div className="flex justify-end space-x-2">
+                {!isMedicineSelected(medicine.id) ? (
+                  <button
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    onClick={() => addMedicine(medicine)}
+                  >
+                    Add
+                  </button>
+                ) : (
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    onClick={() => removeMedicine(medicine.id)}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+
 
 
   return (
