@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ConnectWallet } from "@thirdweb-dev/react";
 import PlaceOrder from "./orders/PlaceOrder";
 import LabTest from './labtest/LabTest';
+import Medicine from './medicine/Medicine';
 // import LabTestDetailPage from './LabTestDetailPage'; // Assuming you created this earlier
 
 // Define the routes using createBrowserRouter
@@ -17,10 +18,10 @@ const router = createBrowserRouter([
     path: "/lab-test",
     element:<LabTest/> ,
   },
-  // {
-  //   path: "/lab-tests",
-  //   element: <LabTestDetailPage />,
-  // },
+  {
+    path: "/medicine",
+    element: <Medicine/>,
+  },
 ]);
 
 function App() {
