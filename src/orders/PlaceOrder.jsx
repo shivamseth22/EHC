@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { v4 as uuidv4 } from 'uuid';
+import { ConnectWallet } from '@thirdweb-dev/react';
+import { useNavigate } from 'react-router-dom';
 
 // Replace these with your contract's ABI and deployed address
 const CONTRACT_ABI = [
@@ -67,6 +69,7 @@ const CONTRACT_ABI = [
 ];
 const CONTRACT_ADDRESS = '0xd9145CCE52D386f254917e481eB44e9943F39138';
 
+
 const PlaceOrder = () => {
   const [formData, setFormData] = useState({
     testDetails: '',
@@ -122,6 +125,7 @@ const PlaceOrder = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
     setLoading(true);
@@ -151,14 +155,18 @@ const PlaceOrder = () => {
         transactionId: uuidv4(), // Generate a new random transaction ID for the next order
       });
     } catch (error) {
-      alert(`Transaction failed: ${error.message}`);
+      console.log(`Transaction failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
+  const navigate = useNavigate()
 
   return (
+    <>
+
     <div className="bg-blue-50 min-h-screen flex flex-col items-center justify-center p-4">
+
       <div className="bg-white shadow-md rounded-lg w-full max-w-sm p-6">
         <h1 className="text-lg font-bold text-center mb-4">Order Details</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -167,6 +175,7 @@ const PlaceOrder = () => {
             <textarea
               name="testDetails"
               id="testDetails"
+              placeholder='Details'
               value={formData.testDetails} // Display the test details
               readOnly // Set the field to read-only
               className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
@@ -178,6 +187,7 @@ const PlaceOrder = () => {
               type="text"
               name="totalAmount"
               id="totalAmount"
+              placeholder='Total Amount'
               value={formData.totalAmount} // Display the calculated total amount
               readOnly // Set the field to read-only
               className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
@@ -190,21 +200,24 @@ const PlaceOrder = () => {
               name="transactionId"
               id="transactionId"
               readOnly
-              placeholder="Enter the transaction ID after the payment"
+              placeholder="Transaction of the payment"
               value={formData.transactionId}
               onChange={handleChange} // Handle input change
-              className={`w-full p-2 border  bg-gray-100 ${errors.transactionId ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              className={`w-full p-2 border cursor-not-allowed  bg-gray-100 ${errors.transactionId ? 'border-red-500' : 'border-gray-300'} rounded-md`}
             />
             {errors.transactionId && <p className="text-red-500 text-sm">{errors.transactionId}</p>}
           </div>
           <div className="flex justify-between">
             <button
               type="button"
-              onClick={() => setFormData({
+              onClick={() =>{
+                navigate('/lab-test')
+               setFormData({
                 testDetails: '',
                 totalAmount: '',
                 transactionId: '',
-              })}
+              })}}
+
               className="bg-orange-400 text-white py-2 px-4 rounded-md"
             >
               Cancel
@@ -221,6 +234,7 @@ const PlaceOrder = () => {
         {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
       </div>
     </div>
+    </>
   );
 };
 
