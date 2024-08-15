@@ -120,12 +120,11 @@ const CONTRACT_ABI = [
 		"type": "function"
 	}
 ]
-
 const CONTRACT_ADDRESS = '0xf8e81D47203A594245E36C48e151709F0C19fBe8';
 
 const Physician = () => {
   const navigate = useNavigate();
-  const [selectedPhysicians, setSelectedPhysicians] = useState([]);
+  const [selectedPhysician, setSelectedPhysician] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const physicians = [
@@ -151,24 +150,23 @@ const Physician = () => {
     { name: 'Dr. Shweta Rao', fees: ethers.utils.parseUnits('0.000000095', 'ether'), yearsExp: 13, address: '2020, T Street, Indore' }
 ];
 
-
   const addPhysician = (physician) => {
-    setSelectedPhysicians([...selectedPhysicians, physician]);
+    setSelectedPhysician(physician);
   };
 
-  const removePhysician = (name) => {
-    setSelectedPhysicians(selectedPhysicians.filter(physician => physician.name !== name));
+  const removePhysician = () => {
+    setSelectedPhysician(null);
   };
 
   const isPhysicianSelected = (name) => {
-    return selectedPhysicians.some(physician => physician.name === name);
+    return selectedPhysician && selectedPhysician.name === name;
   };
 
   const recipientAddress = '0x14d61A4Fa152d16678eb6458853418667043Df80'; // Replace with your address
 
   const handleCheckout = async () => {
-    if (selectedPhysicians.length === 0) {
-      alert('Please select at least one physician before proceeding to checkout.');
+    if (!selectedPhysician) {
+      alert('Please select a physician before proceeding to checkout.');
       return;
     }
 
@@ -186,8 +184,8 @@ const Physician = () => {
       const signer = provider.getSigner();
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-      // Calculate total cost in wei
-      const totalCost = selectedPhysicians.reduce((acc, physician) => acc.add(physician.fees), ethers.BigNumber.from(0));
+      // Calculate total cost in wei (only one physician is selected)
+      const totalCost = selectedPhysician.fees;
 
       // Generate a unique transaction ID
       const transactionId = ethers.utils.hexlify(ethers.utils.randomBytes(32));
@@ -202,8 +200,8 @@ const Physician = () => {
 
       alert('Transaction successful!');
 
-      // Clear selected physicians and navigate
-      setSelectedPhysicians([]);
+      // Clear selected physician and navigate
+      setSelectedPhysician(null);
       navigate('/');
     } catch (error) {
       console.error('Transaction failed:', error);
@@ -215,7 +213,7 @@ const Physician = () => {
 
   return (
     <div className="p-4 md:p-6 lg:p-8">
-      <div className='flex justify-between items-center mb-6'>
+      <div className='flex justify-between items-center mb-2'>
         <h1 className="text-2xl font-bold">List of Physicians</h1>
         <button
           onClick={() => navigate('/patient-dashboard')}
@@ -223,38 +221,41 @@ const Physician = () => {
           Back
         </button>
       </div>
+      <div className="mb-4">
+        <button
+          className={`bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 ${!selectedPhysician ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={handleCheckout}
+          disabled={isProcessing || !selectedPhysician}
+        >
+          {isProcessing ? 'Processing...' : `Checkout (1 appointment)`}
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {physicians.map((doctor, index) => (
           <div key={index} className="bg-white border border-gray-200 rounded-lg shadow-md p-4 flex flex-col">
             <h2 className="text-lg font-semibold mb-2">{doctor.name}</h2>
-            <p className="text-gray-600 mb-1"><strong>Fees:</strong> {ethers.utils.formatUnits(doctor.fees, 'ether')}</p>
+            <p className="text-gray-600 mb-1"><strong>Fees:</strong> {ethers.utils.formatUnits(doctor.fees, 'ether')} ETH</p>
             <p className="text-gray-600 mb-1"><strong>Years of Experience:</strong> {doctor.yearsExp}</p>
             <p className="text-gray-600 mb-4"><strong>Address:</strong> {doctor.address}</p>
-            <button
-              className={`bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 ${isPhysicianSelected(doctor.name) ? 'hidden' : ''}`}
-              onClick={() => addPhysician(doctor)}
-            >
-              Book Appointment
-            </button>
-            <button
-              className={`bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 ${!isPhysicianSelected(doctor.name) ? 'hidden' : ''}`}
-              onClick={() => removePhysician(doctor.name)}
-            >
-              Cancel
-            </button>
+            {isPhysicianSelected(doctor.name) ? (
+              <button
+                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                onClick={removePhysician}
+              >
+                Cancel Appointment
+              </button>
+            ) : (
+              <button
+                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                onClick={() => addPhysician(doctor)}
+                disabled={!!selectedPhysician} // Disable booking another physician
+              >
+                Book Appointment
+              </button>
+            )}
           </div>
         ))}
-      </div>
-
-      <div className="mt-6">
-        <button
-          className={`bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 ${selectedPhysicians.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={handleCheckout}
-          disabled={isProcessing || selectedPhysicians.length === 0}
-        >
-          {isProcessing ? 'Processing...' : `Checkout (${selectedPhysicians.length} appointments)`}
-        </button>
       </div>
     </div>
   );
