@@ -88,10 +88,7 @@ const CONTRACT_ADDRESS = '0xD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771B';
 const LabTest = () => {
   const navigate = useNavigate();
 
-  const [selectedTests, setSelectedTests] = useState(() => {
-    // const savedTests = localStorage.getItem('selectedTests');
-    return savedTests ? JSON.parse(savedTests) : [];
-  });
+  const [selectedTests, setSelectedTests] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const labTests = [
@@ -119,14 +116,12 @@ const LabTest = () => {
   const addTest = (test) => {
     const updatedTests = [...selectedTests, test];
     setSelectedTests(updatedTests);
-    localStorage.setItem('selectedTests', JSON.stringify(updatedTests));
     console.log('Selected Tests after adding:', updatedTests);
   };
 
   const removeTest = (id) => {
     const updatedTests = selectedTests.filter(test => test.id !== id);
     setSelectedTests(updatedTests);
-    localStorage.setItem('selectedTests', JSON.stringify(updatedTests));
     console.log('Selected Tests after removing:', updatedTests);
   };
 
