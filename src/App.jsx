@@ -6,6 +6,7 @@ import { ConnectWallet } from "@thirdweb-dev/react";
 import PlaceOrder from "./orders/PlaceOrder";
 import LabTest from './labtest/LabTest';
 import Medicine from './medicine/Medicine';
+import PatientDashboard from './patientDashboard/PatientDashboard';
 // import LabTestDetailPage from './LabTestDetailPage'; // Assuming you created this earlier
 
 // Define the routes using createBrowserRouter
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/medicine",
     element: <Medicine/>,
+  },
+  {
+    path: "/patient-dashboard",
+    element: <PatientDashboard/>,
   },
 ]);
 
