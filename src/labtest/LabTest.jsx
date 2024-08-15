@@ -37,12 +37,14 @@ const LabTest = () => {
     const updatedTests = [...selectedTests, test];
     setSelectedTests(updatedTests);
     localStorage.setItem('selectedTests', JSON.stringify(updatedTests));
+    console.log('Selected Tests after adding:', updatedTests);
   };
 
   const removeTest = (id) => {
     const updatedTests = selectedTests.filter(test => test.id !== id);
     setSelectedTests(updatedTests);
     localStorage.setItem('selectedTests', JSON.stringify(updatedTests));
+    console.log('Selected Tests after removing:', updatedTests);
   };
 
   const isTestSelected = (id) => {

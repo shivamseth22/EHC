@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { v4 as uuidv4 } from 'uuid';
 
 // Replace these with your contract's ABI and deployed address
 const CONTRACT_ABI = [
@@ -70,79 +71,87 @@ const PlaceOrder = () => {
   const [formData, setFormData] = useState({
     testDetails: '',
     totalAmount: '',
-    transactionId: '',
+    transactionId: uuidv4(), // Generate a random transaction ID
   });
 
+  const [selectedTests, setSelectedTests] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
 
-  // Validate form fields
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.testDetails) newErrors.testDetails = 'Test Details are required.';
-    if (!formData.totalAmount) newErrors.totalAmount = 'Total Amount is required.';
-    if (!formData.transactionId) newErrors.transactionId = 'Transaction ID is required.';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  useEffect(() => {
+    const savedTests = localStorage.getItem('selectedTests');
+    if (savedTests) {
+      const parsedTests = JSON.parse(savedTests);
+      setSelectedTests(parsedTests);
 
-  // Handle input changes
+      const total = parsedTests.reduce((acc, test) => acc + test.cost, 0);
+      setTotalAmount(total.toFixed(6));
+
+      const testDetails = parsedTests.map(test => `${test.name}: ${test.cost} ETH`).join(', ');
+
+      setFormData(prevState => ({
+        ...prevState,
+        testDetails: testDetails,
+        totalAmount: total.toFixed(6),
+      }));
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  // Handle form submission
+  const validateForm = () => {
+    let valid = true;
+    const errors = {};
+
+    if (!formData.transactionId) {
+      valid = false;
+      errors.transactionId = "Transaction ID is required";
+    }
+
+    setErrors(errors);
+    return valid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setLoading(true);
     setSuccessMessage('');
-    setErrorMessage('');
 
     try {
-      // Check for MetaMask
       if (!window.ethereum) {
         throw new Error('MetaMask is not installed.');
       }
 
-      // Request account access
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send('eth_requestAccounts', []);
-
-      // Create a signer
       const signer = provider.getSigner();
-
-      // Create a contract instance
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-      // Call the smart contract method
       const txResponse = await contract.placeOrder(
         formData.testDetails,
         ethers.utils.parseUnits(formData.totalAmount, 'ether'),
         formData.transactionId
       );
 
-      console.log('Transaction Response:', txResponse);
-
-      // Wait for the transaction to be mined
       await txResponse.wait();
-      console.log('Transaction Confirmed');
-
       setSuccessMessage('Order successfully placed and transaction confirmed!');
       setFormData({
         testDetails: '',
         totalAmount: '',
-        transactionId: '',
+        transactionId: uuidv4(), // Generate a new random transaction ID for the next order
       });
     } catch (error) {
-      setErrorMessage(`An error occurred: ${error.message}`);
+      alert(`Transaction failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -158,12 +167,10 @@ const PlaceOrder = () => {
             <textarea
               name="testDetails"
               id="testDetails"
-              placeholder="Enter lab test details"
-              value={formData.testDetails}
-              onChange={handleChange}
-              className={`w-full p-2 border ${errors.testDetails ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              value={formData.testDetails} // Display the test details
+              readOnly // Set the field to read-only
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
             />
-            {errors.testDetails && <p className="text-red-500 text-sm">{errors.testDetails}</p>}
           </div>
           <div>
             <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700">Total Amount (in ETH)</label>
@@ -171,12 +178,10 @@ const PlaceOrder = () => {
               type="text"
               name="totalAmount"
               id="totalAmount"
-              placeholder="Enter total amount"
-              value={formData.totalAmount}
-              onChange={handleChange}
-              className={`w-full p-2 border ${errors.totalAmount ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              value={formData.totalAmount} // Display the calculated total amount
+              readOnly // Set the field to read-only
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
             />
-            {errors.totalAmount && <p className="text-red-500 text-sm">{errors.totalAmount}</p>}
           </div>
           <div>
             <label htmlFor="transactionId" className="block text-sm font-medium text-gray-700">Transaction ID</label>
@@ -184,10 +189,11 @@ const PlaceOrder = () => {
               type="text"
               name="transactionId"
               id="transactionId"
+              readOnly
               placeholder="Enter the transaction ID after the payment"
               value={formData.transactionId}
-              onChange={handleChange}
-              className={`w-full p-2 border ${errors.transactionId ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              onChange={handleChange} // Handle input change
+              className={`w-full p-2 border  bg-gray-100 ${errors.transactionId ? 'border-red-500' : 'border-gray-300'} rounded-md`}
             />
             {errors.transactionId && <p className="text-red-500 text-sm">{errors.transactionId}</p>}
           </div>
@@ -213,10 +219,9 @@ const PlaceOrder = () => {
           </div>
         </form>
         {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
-        {errorMessage && <p className="text-red-500 text-center mt-4">{errorMessage}</p>}
       </div>
     </div>
   );
-}
+};
 
 export default PlaceOrder;
