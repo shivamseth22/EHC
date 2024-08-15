@@ -11,6 +11,7 @@ import Dentist from './patientDashboard/dentist/Dentist';
 import Diet from './patientDashboard/diet/Diet';
 import Physician from './patientDashboard/physician/Physician';
 import Cardio from './patientDashboard/cardio/Cardio';
+import Sergon from './patientDashboard/sergon/Sergon';
 // import LabTestDetailPage from './LabTestDetailPage'; // Assuming you created this earlier
 
 // Define the routes using createBrowserRouter
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: "/diet-list",
     element: <Diet/>,
+  },
+  {
+    path: "/sergon-list",
+    element: <Sergon/>,
   },
 ]);
 
