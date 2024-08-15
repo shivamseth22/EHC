@@ -4,6 +4,7 @@ import dentist from "/dentist.png";
 import cardio from "/download.jpeg";
 import diet from "/diet.jpeg";
 import sergon from "/sergon.png";
+import eye from "/eye.png";
 import back from "/newbackpng.png";
 import { useNavigate } from 'react-router-dom';
 
@@ -44,10 +45,10 @@ const PatientDashboard = () => {
                     <span className="text-center font-semibold text-lg">SURGEON</span>
                 </div>
                 <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105"
-                    onClick={() => navigate('/patient-dashboard')}
+                    onClick={() => navigate('/eye-list')}
                 >
-                    <img src={back} alt="Back" className="h-20 w-24 mb-4" />
-                    <span className="text-center font-semibold text-lg text-red-500">BACK</span>
+                    <img src={eye} alt="Back" className="h-20 w-24 mb-4" />
+                    <span className="text-center font-semibold text-lg">Ophthalmologist</span>
                 </div>
             </div>
         </div>

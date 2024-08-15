@@ -12,6 +12,7 @@ import Diet from './patientDashboard/diet/Diet';
 import Physician from './patientDashboard/physician/Physician';
 import Cardio from './patientDashboard/cardio/Cardio';
 import Sergon from './patientDashboard/sergon/Sergon';
+import Eye from './patientDashboard/eye/Eye';
 // import LabTestDetailPage from './LabTestDetailPage'; // Assuming you created this earlier
 
 // Define the routes using createBrowserRouter
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
   {
     path: "/sergon-list",
     element: <Sergon/>,
+  },
+  {
+    path: "/eye-list",
+    element: <Eye/>,
   },
 ]);
 
