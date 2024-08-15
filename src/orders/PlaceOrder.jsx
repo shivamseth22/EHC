@@ -84,7 +84,7 @@ const PlaceOrder = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    const savedTests = localStorage.getItem('selectedTests');
+    const savedTests = localStorage?.getItem('selectedTests');
     if (savedTests) {
       const parsedTests = JSON.parse(savedTests);
       setSelectedTests(parsedTests);
