@@ -84,7 +84,7 @@ const PlaceOrder = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    const savedTests = localStorage?.getItem('selectedTests');
+    const savedTests = localStorage?.getItem('selectedTests')
     if (savedTests) {
       const parsedTests = JSON.parse(savedTests);
       setSelectedTests(parsedTests);
@@ -165,75 +165,76 @@ const PlaceOrder = () => {
   return (
     <>
 
-    <div className="bg-blue-50 min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="bg-blue-50 min-h-screen flex flex-col items-center justify-center p-4">
 
-      <div className="bg-white shadow-md rounded-lg w-full max-w-sm p-6">
-        <h1 className="text-lg font-bold text-center mb-4">Order Details</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="testDetails" className="block text-sm font-medium text-gray-700">Test Details</label>
-            <textarea
-              name="testDetails"
-              id="testDetails"
-              placeholder='Details'
-              value={formData.testDetails} // Display the test details
-              readOnly // Set the field to read-only
-              className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
-            />
-          </div>
-          <div>
-            <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700">Total Amount (in ETH)</label>
-            <input
-              type="text"
-              name="totalAmount"
-              id="totalAmount"
-              placeholder='Total Amount'
-              value={formData.totalAmount} // Display the calculated total amount
-              readOnly // Set the field to read-only
-              className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
-            />
-          </div>
-          <div>
-            <label htmlFor="transactionId" className="block text-sm font-medium text-gray-700">Transaction ID</label>
-            <input
-              type="text"
-              name="transactionId"
-              id="transactionId"
-              readOnly
-              placeholder="Transaction of the payment"
-              value={formData.transactionId}
-              onChange={handleChange} // Handle input change
-              className={`w-full p-2 border cursor-not-allowed  bg-gray-100 ${errors.transactionId ? 'border-red-500' : 'border-gray-300'} rounded-md`}
-            />
-            {errors.transactionId && <p className="text-red-500 text-sm">{errors.transactionId}</p>}
-          </div>
-          <div className="flex justify-between">
-            <button
-              type="button"
-              onClick={() =>{
-                navigate('/lab-test')
-               setFormData({
-                testDetails: '',
-                totalAmount: '',
-                transactionId: '',
-              })}}
+        <div className="bg-white shadow-md rounded-lg w-full max-w-sm p-6">
+          <h1 className="text-lg font-bold text-center mb-4">Order Details</h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="testDetails" className="block text-sm font-medium text-gray-700">Test Details</label>
+              <textarea
+                name="testDetails"
+                id="testDetails"
+                placeholder='Details'
+                value={formData.testDetails} // Display the test details
+                readOnly // Set the field to read-only
+                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+              />
+            </div>
+            <div>
+              <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700">Total Amount (in ETH)</label>
+              <input
+                type="text"
+                name="totalAmount"
+                id="totalAmount"
+                placeholder='Total Amount'
+                value={formData.totalAmount} // Display the calculated total amount
+                readOnly // Set the field to read-only
+                className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+              />
+            </div>
+            <div>
+              <label htmlFor="transactionId" className="block text-sm font-medium text-gray-700">Transaction ID</label>
+              <input
+                type="text"
+                name="transactionId"
+                id="transactionId"
+                readOnly
+                placeholder="Transaction of the payment"
+                value={formData.transactionId}
+                onChange={handleChange} // Handle input change
+                className={`w-full p-2 border cursor-not-allowed  bg-gray-100 ${errors.transactionId ? 'border-red-500' : 'border-gray-300'} rounded-md`}
+              />
+              {errors.transactionId && <p className="text-red-500 text-sm">{errors.transactionId}</p>}
+            </div>
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={() => {
+                  navigate('/lab-test')
+                  setFormData({
+                    testDetails: '',
+                    totalAmount: '',
+                    transactionId: '',
+                  })
+                }}
 
-              className="bg-orange-400 text-white py-2 px-4 rounded-md"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-green-500 text-white py-2 px-4 rounded-md"
-              disabled={loading}
-            >
-              {loading ? 'Submitting...' : 'Order Confirmed'}
-            </button>
-          </div>
-        </form>
-        {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
+                className="bg-orange-400 text-white py-2 px-4 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-green-500 text-white py-2 px-4 rounded-md"
+                disabled={loading}
+              >
+                {loading ? 'Submitting...' : 'Order Confirmed'}
+              </button>
+            </div>
+          </form>
+          {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
+        </div>
       </div>
-    </div>
     </>
   );
 };
