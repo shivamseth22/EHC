@@ -50,7 +50,7 @@ const LabTest = () => {
   };
 
   const handleCheckout = () => {
-    navigate('/placeorder');
+    navigate('/');
   };
 
   return (

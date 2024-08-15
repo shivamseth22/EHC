@@ -91,7 +91,7 @@ const handleCheckout = async () => {
 
       // Call the contract method
       const txResponse = await contract.completeTransaction(
-        '0xYourRecipientAddressHere', // Replace with your recipient address
+        recipientAddress, // Replace with your recipient address
         totalCost,
         transactionId
       );
