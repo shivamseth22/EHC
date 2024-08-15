@@ -7,6 +7,7 @@ import PlaceOrder from "./orders/PlaceOrder";
 import LabTest from './labtest/LabTest';
 import Medicine from './medicine/Medicine';
 import PatientDashboard from './patientDashboard/PatientDashboard';
+import Dentist from './patientDashboard/dentist/Dentist';
 // import LabTestDetailPage from './LabTestDetailPage'; // Assuming you created this earlier
 
 // Define the routes using createBrowserRouter
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: "/patient-dashboard",
     element: <PatientDashboard/>,
+  },
+  {
+    path: "/dentist-list",
+    element: <Dentist/>,
   },
 ]);
 
