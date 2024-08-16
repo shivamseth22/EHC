@@ -143,7 +143,7 @@ const LabTest = () => {
     setIsProcessing(true);
 
     try {
-      // Connect to MetaMask
+      // Connect to MetaMask~~
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send('eth_requestAccounts', []);
       const signer = provider.getSigner();
@@ -177,7 +177,7 @@ const LabTest = () => {
         <div className="flex justify-between items-center mb-4">
           <button
             className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
-            onClick={() => navigate('/')}
+            
             disabled={isProcessing}
           >
             Back
